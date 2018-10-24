@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
  
 from Tkinter import * 
-from  screen import *
+from CallBack import *
+from screen import *
 
-
-mainScreen().mainloop()
+callBack=CallBack()
+mainScreen(callBack).mainloop()
