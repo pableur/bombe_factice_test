@@ -1,19 +1,34 @@
 # -*- coding: utf-8 -*-
  
 from Tkinter import * 
+import Tix
 
-def mainScreen(callBack):
-	fenetre = Tk()
-	fenetre.title("RPcorpo test")
-	fenetre.maxsize(500, 300)
+def mainScreen(fenetre, callBack):
+
+	#fenetre.maxsize(500, 300)
+	
+	list = fenetre.pack_slaves()
+	for l in list:
+		l.destroy()
 	
 	p = PanedWindow(fenetre, orient=VERTICAL)
 	p.pack(side=TOP, expand=Y, fill=BOTH, pady=2, padx=2)
 
+	frame_serial = Frame(fenetre, borderwidth=2, relief=GROOVE)
 	frame_led = Frame(fenetre, borderwidth=2, relief=GROOVE)
 	frame_alarme = Frame(fenetre, borderwidth=2, relief=GROOVE)
 	frame_LCD1 = Frame(fenetre, borderwidth=2, relief=GROOVE)
 	frame_LCD2 = Frame(fenetre, borderwidth=2, relief=GROOVE)
+	
+	if callBack.connect==False:
+		Label(frame_serial, text="port COM :").pack(side=LEFT,padx=10, pady=10)
+		varcombo = Tix.StringVar() 
+		listbox = Tix.ComboBox(frame_serial, variable=varcombo)	
+		listbox.insert(END, "Python")
+		listbox.pack(side=LEFT)
+		Button(frame_serial, text="CONNECT", command=lambda: callBack.connectSerial(varcombo.get())).pack(side=RIGHT,padx=10, pady=10)
+	else:
+		Button(frame_serial, text="DECONNECT", command=lambda: callBack.deconnectSerial()).pack(side=RIGHT,padx=10, pady=10)
 		
 	led_label = Label(frame_led, text="LED").pack(side=LEFT,padx=10, pady=10)
 	led_bouton_red=Button(frame_led, text="RED", command=callBack.ledRed).pack(side=LEFT,padx=10, pady=10)
@@ -38,10 +53,13 @@ def mainScreen(callBack):
 	 
 	Button(fenetre, text="Fermer", command=fenetre.quit).pack(side=LEFT,padx=10, pady=10)
 
-	p.add(frame_led)
-	p.add(frame_alarme)
-	p.add(frame_LCD1)
-	p.add(frame_LCD2)
+	p.add(frame_serial)
+	
+	if callBack.connect:
+		p.add(frame_led)
+		p.add(frame_alarme)
+		p.add(frame_LCD1)
+		p.add(frame_LCD2)
 	
 	p.pack()
 
